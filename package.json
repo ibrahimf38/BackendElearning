@@ -1,0 +1,29 @@
+{
+  "name": "elearning-mali-backend",
+  "version": "1.0.0",
+  "description": "Backend API pour Elearning-Mali — Node.js + Express + PostgreSQL + AWS S3",
+  "main": "src/index.js",
+  "scripts": {
+    "start":   "node src/index.js",
+    "dev":     "nodemon src/index.js",
+    "db:init": "node src/config/db_init.js"
+  },
+  "dependencies": {
+    "express":          "^4.19.2",
+    "pg":               "^8.12.0",
+    "bcryptjs":         "^2.4.3",
+    "jsonwebtoken":     "^9.0.2",
+    "multer":           "^1.4.5-lts.1",
+    "multer-s3":        "^3.0.1",
+    "@aws-sdk/client-s3": "^3.637.0",
+    "@aws-sdk/s3-request-presigner": "^3.637.0",
+    "dotenv":           "^16.4.5",
+    "cors":             "^2.8.5",
+    "helmet":           "^7.1.0",
+    "express-rate-limit": "^7.4.0",
+    "uuid":             "^10.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
