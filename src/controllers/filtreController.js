@@ -6,9 +6,23 @@ const { asyncHandler } = require('../middleware/errorHandler')
 // ══════════════════════════════════════════════════════════════
 
 const getDomaines = asyncHandler(async (req, res) => {
-  const { rows } = await pool.query(
-    'SELECT * FROM domaine ORDER BY nom_domaine'
-  )
+  // Ordre métier (pas alphabétique) : Fondamental d'abord, puis la
+  // progression naturelle des cursus. Tout domaine ajouté plus tard
+  // (non listé ici) apparaît à la fin, trié alphabétiquement.
+  const { rows } = await pool.query(`
+    SELECT * FROM domaine
+    ORDER BY
+      CASE nom_domaine
+        WHEN 'Fondamental'   THEN 1
+        WHEN 'Secondaire'    THEN 2
+        WHEN 'Universitaire' THEN 3
+        WHEN 'Technique'     THEN 4
+        WHEN 'Art-culture'   THEN 5
+        WHEN 'Defense'       THEN 6
+        ELSE 99
+      END,
+      nom_domaine
+  `)
   res.json(rows)
 })
 

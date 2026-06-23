@@ -164,6 +164,26 @@ const createTutoriel = asyncHandler(async (req, res) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
       [id, id_matiere, titre, sous_titre || null, description || null, url, duree_minutes]
     )
+
+    // Lie automatiquement cette matière au domaine pour le filtrage
+    // des tutoriels (table domaine_matiere_tutoriel). Sans ce lien,
+    // le tutoriel n'apparaît jamais quand le client filtre par domaine
+    // dans la page Tutoriel vidéo — seulement en mode "Tout".
+    const { rows: [domaineRow] } = await db.query(
+      `SELECT n.id_domaine
+       FROM matiere m
+       JOIN niveau n ON n.id = m.id_niveau
+       WHERE m.id = $1`,
+      [id_matiere]
+    )
+    if (domaineRow) {
+      await db.query(
+        `INSERT INTO domaine_matiere_tutoriel (id_domaine, id_matiere)
+         VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+        [domaineRow.id_domaine, id_matiere]
+      )
+    }
+
     await db.query('COMMIT')
     await signUrlField(row, 'url_video')
     res.status(201).json(row)

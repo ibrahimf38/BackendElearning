@@ -78,10 +78,17 @@ router.delete('/sujets-examen/:id', authMiddleware, adminMiddleware, contenu.del
 // ══════════════════════════════════════════════════════════════
 // PAIEMENT & ABONNEMENT
 // ══════════════════════════════════════════════════════════════
-router.post('/paiements/orange-money', authMiddleware, paie.payerOrangeMoney)
-router.post('/paiements/moov-money',   authMiddleware, paie.payerMoovMoney)
-router.get ('/abonnements',            authMiddleware, paie.getHistoriqueAbonnements)
-router.get ('/admin/abonnements',      authMiddleware, adminMiddleware, paie.getAllAbonnements)
+router.post('/paiements/orange-money',          authMiddleware, paie.payerOrangeMoney)
+router.post('/paiements/moov-money',            authMiddleware, paie.payerMoovMoney)
+router.get ('/paiements/:idTransaction/statut', authMiddleware, paie.verifierStatutPaiement)
+router.get ('/abonnements',                     authMiddleware, paie.getHistoriqueAbonnements)
+router.get ('/admin/abonnements',               authMiddleware, adminMiddleware, paie.getAllAbonnements)
+
+// Webhooks fournisseurs — PAS de authMiddleware (Orange/Moov n'ont pas de JWT client).
+// Sécurisés autrement : vérification de signature/IP à ajouter en production
+// selon ce que fournit chaque opérateur.
+router.post('/paiements/orange-money/callback', paie.orangeMoneyCallback)
+router.post('/paiements/moov-money/callback',   paie.moovMoneyCallback)
 
 // ══════════════════════════════════════════════════════════════
 // USERS & STATS (admin)
