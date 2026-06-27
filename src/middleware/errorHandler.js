@@ -1,6 +1,9 @@
 /**
  * Wrapper pour éviter les try/catch répétitifs dans les controllers.
  * Utilisation : router.get('/', asyncHandler(monController))
+ * 
+ * 
+ * 
  */
 const asyncHandler = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next)
