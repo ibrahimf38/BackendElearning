@@ -1,13 +1,13 @@
 require('dotenv').config()
 
-const express    = require('express')
-const cors       = require('cors')
-const helmet     = require('helmet')
-const rateLimit  = require('express-rate-limit')
-const routes     = require('./routes/index')
+const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
+const routes = require('./routes/index')
 const { errorHandler, notFound } = require('./middleware/errorHandler')
 
-const app  = express()
+const app = express()
 const PORT = process.env.PORT || 3000
 
 // ── Trust proxy (Railway / Vercel / Render utilisent des reverse proxies) ──
@@ -18,11 +18,27 @@ app.set('trust proxy', 1)
 app.use(helmet())
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173', // Admin React (dev)
-    'http://localhost:3001',
-    process.env.ADMIN_URL,   // Admin en production
-  ].filter(Boolean),
+  origin: (origin, callback) => {
+    // Autorise les requêtes sans origin (ex: Postman, mobile)
+    if (!origin) return callback(null, true)
+
+    const allowed = [
+      'http://localhost:5173',
+      'http://localhost:3001',
+      process.env.ADMIN_URL,
+    ].filter(Boolean)
+
+    // Accepte toutes les URLs Vercel (production + preview)
+    const isVercel = origin.endsWith('.vercel.app')
+    // Accepte aussi les URLs Railway (pour les tests internes)
+    const isRailway = origin.endsWith('.railway.app')
+
+    if (allowed.includes(origin) || isVercel || isRailway) {
+      callback(null, true)
+    } else {
+      callback(new Error(`CORS bloqué pour: ${origin}`))
+    }
+  },
   credentials: true,
 }))
 
@@ -58,10 +74,8 @@ app.get('/health', (req, res) => res.json({
 // ── Erreurs ───────────────────────────────────────────────────
 app.use(notFound)
 app.use(errorHandler)
-//____________________
-//____________________
+
 // ── Démarrage ─────────────────────────────────────────────────
-//____________________
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
   console.log(`📱 Accessible sur le réseau via http://<votre-IP>:${PORT}`)
