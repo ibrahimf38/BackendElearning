@@ -1,7 +1,7 @@
 const express = require('express')
 const router  = express.Router()
 
-const { authMiddleware, adminMiddleware, abonnementActifMiddleware } = require('../middleware/auth')
+const { authMiddleware, adminMiddleware, abonnementActifMiddleware, adminOrAbonneMiddleware } = require('../middleware/auth')
 const { uploadPDF, uploadVideo } = require('../config/s3')
 
 // Controllers
@@ -45,8 +45,10 @@ router.delete('/matieres/:id',        authMiddleware, adminMiddleware, filtre.de
 router.post  ('/domaines/tutoriels/link', authMiddleware, adminMiddleware, filtre.addDomaineTutorielLink)
 
 // ══════════════════════════════════════════════════════════════
-// COURS (abonné requis pour lire)
+// COURS
 // ══════════════════════════════════════════════════════════════
+// Route admin — liste tous les cours (sans filtre abonnement)
+router.get   ('/cours',                     authMiddleware, adminMiddleware, contenu.getAllCours)
 router.get   ('/matieres/:idMatiere/cours', authMiddleware, abonnementActifMiddleware, contenu.getCoursByMatiere)
 router.post  ('/cours',                     authMiddleware, adminMiddleware, uploadPDF.single('fichier'), contenu.createCours)
 router.put   ('/cours/:id',                 authMiddleware, adminMiddleware, uploadPDF.single('fichier'), contenu.updateCours)
@@ -55,23 +57,23 @@ router.delete('/cours/:id',                 authMiddleware, adminMiddleware, con
 // ══════════════════════════════════════════════════════════════
 // TUTORIELS VIDÉO
 // ══════════════════════════════════════════════════════════════
-router.get   ('/tutoriels',                 authMiddleware, abonnementActifMiddleware, contenu.getTutoriels)
+router.get   ('/tutoriels',                    authMiddleware, adminOrAbonneMiddleware, contenu.getTutoriels)
 router.get   ('/matieres/:idMatiere/tutoriels', authMiddleware, abonnementActifMiddleware, contenu.getTutosByMatiere)
-router.post  ('/tutoriels',                 authMiddleware, adminMiddleware, uploadVideo.single('fichier'), contenu.createTutoriel)
-router.delete('/tutoriels/:id',             authMiddleware, adminMiddleware, contenu.deleteTutoriel)
+router.post  ('/tutoriels',                    authMiddleware, adminMiddleware, uploadVideo.single('fichier'), contenu.createTutoriel)
+router.delete('/tutoriels/:id',                authMiddleware, adminMiddleware, contenu.deleteTutoriel)
 
 // ══════════════════════════════════════════════════════════════
 // EBOOKS / BROCHURES / SUJETS
 // ══════════════════════════════════════════════════════════════
-router.get   ('/ebooks',        authMiddleware, abonnementActifMiddleware, contenu.getEbooks)
+router.get   ('/ebooks',        authMiddleware, adminOrAbonneMiddleware, contenu.getEbooks)
 router.post  ('/ebooks',        authMiddleware, adminMiddleware, uploadPDF.single('fichier'), contenu.createEbook)
 router.delete('/ebooks/:id',    authMiddleware, adminMiddleware, contenu.deleteEbook)
 
-router.get   ('/brochures',     authMiddleware, abonnementActifMiddleware, contenu.getBrochures)
+router.get   ('/brochures',     authMiddleware, adminOrAbonneMiddleware, contenu.getBrochures)
 router.post  ('/brochures',     authMiddleware, adminMiddleware, uploadPDF.single('fichier'), contenu.createBrochure)
 router.delete('/brochures/:id', authMiddleware, adminMiddleware, contenu.deleteBrochure)
 
-router.get   ('/sujets-examen', authMiddleware, abonnementActifMiddleware, contenu.getSujets)
+router.get   ('/sujets-examen', authMiddleware, adminOrAbonneMiddleware, contenu.getSujets)
 router.post  ('/sujets-examen', authMiddleware, adminMiddleware, uploadPDF.single('fichier'), contenu.createSujet)
 router.delete('/sujets-examen/:id', authMiddleware, adminMiddleware, contenu.deleteSujet)
 

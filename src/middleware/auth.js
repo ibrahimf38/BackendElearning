@@ -82,6 +82,41 @@ async function abonnementActifMiddleware(req, res, next) {
 }
 
 /**
+ * Permet l'accès si l'utilisateur est admin OU client abonné.
+ * À utiliser sur les routes GET de contenu (tutoriels, ebooks, etc.)
+ * pour que l'admin puisse voir les contenus sans être abonné.
+ */
+async function adminOrAbonneMiddleware(req, res, next) {
+  try {
+    // Vérifie si c'est un admin
+    const { rows: adminRows } = await pool.query(
+      'SELECT id_admin FROM admin WHERE id_admin = $1',
+      [req.user.id]
+    )
+    if (adminRows[0]) return next()
+
+    // Sinon vérifie l'abonnement client
+    const { rows } = await pool.query(
+      `SELECT id FROM abonnement
+       WHERE id_client = $1
+         AND statut = 'Actif'
+         AND date_fin >= CURRENT_DATE
+       LIMIT 1`,
+      [req.user.id]
+    )
+    if (!rows[0]) {
+      return res.status(403).json({
+        message: 'Abonnement requis pour accéder à ce contenu',
+        code: 'ABONNEMENT_REQUIS',
+      })
+    }
+    next()
+  } catch {
+    res.status(500).json({ message: 'Erreur serveur' })
+  }
+}
+
+/**
  * Génère un token JWT pour un utilisateur.
  */
 function generateToken(payload, expiresIn = process.env.JWT_EXPIRES_IN || '7d') {
@@ -92,5 +127,6 @@ module.exports = {
   authMiddleware,
   adminMiddleware,
   abonnementActifMiddleware,
+  adminOrAbonneMiddleware,
   generateToken,
 }

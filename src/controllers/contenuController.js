@@ -32,6 +32,20 @@ const getCoursByMatiere = asyncHandler(async (req, res) => {
   res.json(rows)
 })
 
+// Liste tous les cours — route admin (sans filtre matière ni abonnement)
+const getAllCours = asyncHandler(async (req, res) => {
+  const { rows } = await pool.query(
+    `SELECT c.id_cours, c.id_matiere, c.titre, c.sous_titre, c.url_fichier,
+            ct.date_ajout, m.nom_matiere
+     FROM cours c
+     JOIN contenu ct ON ct.id = c.id_cours
+     JOIN matiere m  ON m.id  = c.id_matiere
+     ORDER BY ct.date_ajout DESC`
+  )
+  await signUrlFieldList(rows, 'url_fichier')
+  res.json(rows)
+})
+
 const createCours = asyncHandler(async (req, res) => {
   const { titre, sous_titre, id_matiere } = req.body
   if (!titre || !id_matiere) return res.status(400).json({ message: 'titre et id_matiere requis' })
@@ -345,7 +359,7 @@ const deleteSujet = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-  getCoursByMatiere, createCours, updateCours, deleteCours,
+  getCoursByMatiere, getAllCours, createCours, updateCours, deleteCours,
   getTutoriels, getTutosByMatiere, createTutoriel, deleteTutoriel,
   getEbooks, createEbook, deleteEbook,
   getBrochures, createBrochure, deleteBrochure,
