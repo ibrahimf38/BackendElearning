@@ -60,6 +60,7 @@ app.use(notFound)
 app.use(errorHandler)
 
 // ── Démarrage ─────────────────────────────────────────────────
+//____________________
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
   console.log(`📱 Accessible sur le réseau via http://<votre-IP>:${PORT}`)
