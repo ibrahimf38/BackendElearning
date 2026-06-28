@@ -1,5 +1,3 @@
-
-
 require('dotenv').config()
 
 const express    = require('express')
@@ -12,6 +10,8 @@ const { errorHandler, notFound } = require('./middleware/errorHandler')
 const app  = express()
 const PORT = process.env.PORT || 3000
 
+// ── Trust proxy (Railway / Vercel / Render utilisent des reverse proxies) ──
+// Sans ça, express-rate-limit plante sur les plateformes cloud.
 app.set('trust proxy', 1)
 
 // ── Sécurité ──────────────────────────────────────────────────
