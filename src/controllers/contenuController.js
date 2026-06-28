@@ -80,6 +80,9 @@ const updateCours = asyncHandler(async (req, res) => {
     url_fichier = req.file.location
   }
 
+
+  //// Récupérer l'ancienne URL pour supprimer l'ancien fichier S3
+
   const sets = []
   const vals = []
   let i = 1
