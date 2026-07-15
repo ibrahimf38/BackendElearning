@@ -198,7 +198,8 @@ router.get ('/admin/abonnements',               authMiddleware, adminMiddleware,
 // selon ce que fournit chaque opérateur.
 router.post('/paiements/orange-money/callback', paie.orangeMoneyCallback)
 router.post('/paiements/moov-money/callback',   paie.moovMoneyCallback)
-
+router.get('/paiement/retour', (req, res) => res.send('<h2>Paiement en cours de vérification...</h2>'))
+router.get('/paiement/annule', (req, res) => res.send('<h2>Paiement annulé</h2>'))
 // ══════════════════════════════════════════════════════════════
 // USERS & STATS (admin)
 // ══════════════════════════════════════════════════════════════
