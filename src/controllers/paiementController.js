@@ -129,7 +129,7 @@ const payerOrangeMoney = asyncHandler(async (req, res) => {
     const { paymentUrl, payToken } = await orangeMoney.initierPaiement({
       orderId: idTransaction,
       amount: MONTANT,
-      reference: 'Elearning Mali - Abonnement',
+      reference: 'Abonnement Mali Kalan',
     })
 
     await pool.query(
@@ -214,7 +214,7 @@ const payerMoovMoney = asyncHandler(async (req, res) => {
       telephone: numero_moov,
       amount: MONTANT,
       reference: idTransaction,
-      message: 'Abonnement Elearning Mali — Découverte',
+      message: 'Abonnement Mali Kalan — Découverte',
     })
 
     res.status(201).json({
