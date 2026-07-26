@@ -15,9 +15,9 @@ const getDomaines = asyncHandler(async (req, res) => {
       CASE nom_domaine
         WHEN 'Fondamental'   THEN 1
         WHEN 'Secondaire'    THEN 2
-        WHEN 'Universitaire' THEN 3
-        WHEN 'Technique'     THEN 4
-        WHEN 'Art-culture'   THEN 5
+        WHEN 'Technique' THEN 3
+        WHEN 'Universitaire'     THEN 4
+        WHEN 'Musée'   THEN 5
         WHEN 'Defense'       THEN 6
         ELSE 99
       END,
