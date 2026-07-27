@@ -203,7 +203,7 @@ class MoovMoneyService {
         amount:      String(amount),
         shortCode:   this.shortcode,
         externalId:  reference,
-        message:     message || 'Abonnement Elearning Mali',
+        message:     message || 'Abonnement MaliKalan',
       }),
     })
 
@@ -284,7 +284,7 @@ class MoovMoneyService {
           amount:     String(amount),
           shortCode:  this.shortcode,
           externalId: reference,
-          message:    'Remboursement Elearning Mali',
+          message:    'Remboursement Mali kalan',
         }),
       }
     )

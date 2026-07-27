@@ -294,7 +294,7 @@ class OrangeMoneyService {
       cancel_url:   this.cancelUrl,
       notif_url:    this.notifUrl,
       lang:         'fr',
-      reference:    (reference || 'ElearningMali').substring(0, 30),
+      reference:    (reference || 'Mali Kalan').substring(0, 30),
     }
 
     const res = await fetch(this._webpaymentUrl, {
