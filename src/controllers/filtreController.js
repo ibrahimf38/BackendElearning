@@ -13,11 +13,11 @@ const getDomaines = asyncHandler(async (req, res) => {
     SELECT * FROM domaine
     ORDER BY
       CASE nom_domaine
-        WHEN 'Fondamental'   THEN 1
-        WHEN 'Secondaire'    THEN 2
-        WHEN 'Technique / Professionnel' THEN 3
-        WHEN 'Universitaire'     THEN 4
-        WHEN 'Musée'   THEN 5
+        WHEN 'Ecole Numérique du Mali(ENM)'   THEN 1
+        WHEN 'Lycée Numérique du Mali(LNM)'    THEN 2
+        WHEN 'Professionnel Numérique du Mali(PNM)' THEN 3
+        WHEN 'Universitaire Numérique du Mali(UNM)'     THEN 4
+        WHEN 'Musée Numérique du Mali(MNM)'   THEN 5
         WHEN 'Sécurité / Défense'       THEN 6
         ELSE 99
       END,
